@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>FoodFinder | Marikina City</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <header class="hero">
+        <div class="hero-content">
+            <div class="logo">🍔 FoodFinder</div>
+            <h1>Discover Food in Marikina!</h1>
+            <p>A Local Food Recommendation Website</p>
+            <p>Find restaurants that fit your cravings and budget.</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <section class="intro">
+            <h2>Welcome to FoodFinder!</h2>
+            <p>
+                Looking for a place to eat in Marikina City?
+                Search for restaurants, compare food types,
+                set your budget, and explore map directions.
+            </p>
+        </section>
+
+        <section class="features">
+
+            <div class="feature-card">
+                <div class="feature-icon">📍</div>
+                <h3>Search by Location</h3>
+                <p>Search for restaurants and areas in Marikina.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Budget Filter</h3>
+                <p>Find options that fit your spending limit.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>Ratings & Reviews</h3>
+                <p>Compare the sample ratings and review counts.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>Map & Directions</h3>
+                <p>Open Google Maps to explore restaurant locations.</p>
+            </div>
+
+        </section>
+
+        <section class="search-section">
+
+            <h2>🔎 Find Your Next Meal</h2>
+            <p class="section-description">
+                Customize your search to find a restaurant in Marikina.
+            </p>
+
+            <form action="/" method="GET" class="search-form">
+
+                <div class="form-group">
+                    <label for="location">Location or Restaurant</label>
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        placeholder="e.g. Marikina, Cafe Lidia"
+                        value="{{ location }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="food_type">Food Type</label>
+                    <select id="food_type" name="food_type">
+                        <option value="">All Food Types</option>
+
+                        <option value="Filipino"
+                            {% if food_type == 'Filipino' %}selected{% endif %}>
+                            Filipino
+                        </option>
+
+                        <option value="Fast Food"
+                            {% if food_type == 'Fast Food' %}selected{% endif %}>
+                            Fast Food
+                        </option>
+
+                        <option value="Pizza"
+                            {% if food_type == 'Pizza' %}selected{% endif %}>
+                            Pizza
+                        </option>
+
+                        <option value="Cafe"
+                            {% if food_type == 'Cafe' %}selected{% endif %}>
+                            Cafe
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Maximum Budget (₱)</label>
+                    <input
+                        type="number"
+                        id="budget"
+                        name="budget"
+                        min="0"
+                        placeholder="e.g. 150"
+                        value="{{ budget }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="min_rating">Minimum Rating</label>
+                    <select id="min_rating" name="min_rating">
+                        <option value="">Any Rating</option>
+
+                        <option value="3"
+                            {% if min_rating == '3' %}selected{% endif %}>
+                            3+ Stars
+                        </option>
+
+                        <option value="4"
+                            {% if min_rating == '4' %}selected{% endif %}>
+                            4+ Stars
+                        </option>
+
+                        <option value="4.5"
+                            {% if min_rating == '4.5' %}selected{% endif %}>
+                            4.5+ Stars
+                        </option>
+                    </select>
+                </div>
+
+                <button type="submit" class="search-button">
+                    🔍 Search Restaurants
+                </button>
+
+                <a href="/" class="reset-button">Reset Filters</a>
+
+            </form>
+
+        </section>
+
+        <section class="results">
+
+            <h2>🍽️ Restaurants in Marikina</h2>
+
+            <p class="result-count">
+                {{ restaurants|length }} restaurant(s) found
+            </p>
+
+            <div class="restaurant-grid">
+
+                {% for restaurant in restaurants %}
+
+                <article class="restaurant-card">
+
+                    <div class="restaurant-icon">🍴</div>
+
+                    <h3>{{ restaurant.name }}</h3>
+
+                    <p class="restaurant-location">
+                        📍 {{ restaurant.location }}
+                    </p>
+
+                    <p>🍱 {{ restaurant.type }}</p>
+
+                    <div class="price">
+                        ₱{{ "%.2f"|format(restaurant.budget) }}
+                        <span>Estimated budget</span>
+                    </div>
+
+                    <p class="rating">
+                        ⭐ {{ restaurant.rating }}/5
+                    </p>
+
+                    <p class="reviews">
+                        💬 {{ restaurant.reviews }} listed reviews
+                    </p>
+
+                    <a
+                        class="map-button"
+                        href="{{ restaurant.map }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        🗺️ View Map & Directions
+                    </a>
+
+                </article>
+
+                {% else %}
+
+                <div class="no-results">
+                    <div class="empty-icon">🔎</div>
+                    <h3>No restaurants found</h3>
+                    <p>
+                        Try changing your search or adjusting your filters.
+                    </p>
+                    <a href="/" class="reset-button">Show All Restaurants</a>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        <section class="notice">
+            <h3>ℹ️ About Our Listings</h3>
+            <p>
+                Restaurant information, ratings, and review counts are
+                demonstration data and may not reflect current details.
+                Budget amounts are estimates, not verified menu prices.
+                Please check the restaurant or its map listing before visiting.
+            </p>
+        </section>
+
+    </main>
+
+    <footer>
+        <h3>🍔 FoodFinder</h3>
+        <p>Find food you love in Marikina City.</p>
+        <p>© 2026 FoodFinder | Student Project</p>
+    </footer>
+
+</body>
+</html>
